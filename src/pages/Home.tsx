@@ -1,15 +1,32 @@
-import React from "react";
-import torch from "../assets/img/torch4.png"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const ProductCard: React.FC = () => {
+const Produtos = () => {
+  const [produtos, setProdutos] = useState<
+    { id: number; nome: string; numero: number; cor: string | null; preco: number | null; estoque: number | null }[]
+  >([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/produtos")
+      .then((response) => {
+        setProdutos(response.data);
+      })
+      .catch((error) => {
+        console.error("Houve um erro ao buscar os produtos:", error);
+      });
+  }, []);
+
   return (
     <div style={styles.productContainer}>
-      {Array(15).fill(0).map((_, index) => (
-        <div className="product-card" style={styles.card} key={index}>
-          <img src={torch} alt="Tênis" style={styles.image}/>
+      {produtos.map((produto) => (
+        <div className="product-card" style={styles.card} key={produto.id}>
           <div style={styles.details}>
-            <h3 style={styles.title}>Tênis Nike Air Max</h3>
-            <span style={styles.price}>R$ 499,99</span>
+            <h3 style={styles.title}>{produto.nome}</h3>
+            <p style={styles.text}><strong>Número:</strong> {produto.numero}</p>
+            <p style={styles.text}><strong>Cor:</strong> {produto.cor || "Indefinida"}</p>
+            <p style={styles.text}><strong>Estoque:</strong> {produto.estoque !== null ? produto.estoque : "Indisponível"}</p>
+            <span style={styles.price}>R$ {produto.preco !== null ? produto.preco.toFixed(2) : "Sob consulta"}</span>
             <button style={styles.button}>Adicionar ao Carrinho</button>
           </div>
         </div>
@@ -20,7 +37,7 @@ const ProductCard: React.FC = () => {
 
 const styles = {
   productContainer: {
-    display: "flex" as "flex",
+    display: "flex",
     flexWrap: "wrap" as "wrap",
     gap: "20px",
     justifyContent: "center" as "center",
@@ -34,14 +51,9 @@ const styles = {
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     overflow: "hidden",
     backgroundColor: "#fff",
-  },
-  image: {
-    width: "100%",
-    height: "200px",
-    objectFit: "cover" as "cover",
+    padding: "15px",
   },
   details: {
-    padding: "15px",
     textAlign: "center" as "center",
   },
   title: {
@@ -49,10 +61,15 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "10px",
   },
+  text: {
+    fontSize: "14px",
+    marginBottom: "5px",
+  },
   price: {
     fontSize: "16px",
     fontWeight: "bold",
     marginBottom: "15px",
+    display: "block",
   },
   button: {
     padding: "10px",
@@ -65,4 +82,4 @@ const styles = {
   },
 };
 
-export default ProductCard;
+export default Produtos;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
+import Anuncio from "./pages/Anuncio";
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
@@ -28,6 +29,7 @@ const App: React.FC = () => {
         <div style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/Anuncio" element={<Anuncio />} />
           </Routes>
         </div>
       </div>

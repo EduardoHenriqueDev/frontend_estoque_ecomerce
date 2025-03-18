@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Footprints, House, Info, Sun, Moon } from "lucide-react";
+import { Footprints, SquarePen, Info, Sun, Moon } from "lucide-react";
 import logo from "../assets/img/logo.png";
 
 interface SidebarProps {
@@ -18,12 +18,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme }) => {
       <ul style={styles.navLinks}>
         <li style={styles.navItem}>
           <Link to="/" style={styles.link}>
-            <House size={35} color="#fff" />
+            <Footprints size={35} color="#fff" />
           </Link>
         </li>
         <li style={styles.navItem}>
-          <Link to="/produtos" style={styles.link}>
-            <Footprints size={35} color="#fff" />
+          <Link to="/Anuncio" style={styles.link}>
+            <SquarePen size={35} color="#fff" />
           </Link>
         </li>
         <li style={styles.navItem}>
