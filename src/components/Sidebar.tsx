@@ -1,44 +1,42 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { Footprints, House, Info, Sun, Moon } from "lucide-react";
 import logo from "../assets/img/logo.png";
 
-const Sidebar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(true);
+interface SidebarProps {
+  isDarkMode: boolean;
+  toggleTheme: () => void;
+}
 
+const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme }) => {
   return (
-    <div style={{ ...styles.sidebar, width: isOpen ? "170px" : "90px" }}>
+    <div style={{ ...styles.sidebar, }}
+    >
       <div style={styles.logoContainer}>
-        <img
-          src={logo}
-          alt="Logo"
-          style={{
-            width: isOpen ? "120px" : "40px",
-            transition: "width 0.3s",
-          }}
-        />
-        <button onClick={() => setIsOpen(!isOpen)} style={styles.toggleButton}>
-          {isOpen ? "◀" : "▶"}
-        </button>
+        <img src={logo} alt="Logo" style={styles.logo} />
       </div>
-
-      {/* Links da Sidebar */}
       <ul style={styles.navLinks}>
-        <li>
+        <li style={styles.navItem}>
           <Link to="/" style={styles.link}>
-            🏠 {isOpen && "Home"}
+            <House size={35} color="#fff" />
           </Link>
         </li>
-        <li>
+        <li style={styles.navItem}>
           <Link to="/produtos" style={styles.link}>
-            📦 {isOpen && "Produtos"}
+            <Footprints size={35} color="#fff" />
           </Link>
         </li>
-        <li>
+        <li style={styles.navItem}>
           <Link to="/sobre" style={styles.link}>
-            ℹ️ {isOpen && "Sobre"}
+            <Info size={35} color="#fff" />
           </Link>
         </li>
       </ul>
+
+      {/* Toggle de Modo Escuro/Claro */}
+      <button style={styles.toggleButton} onClick={toggleTheme}>
+        {isDarkMode ? <Sun size={25} color="#fff" /> : <Moon size={25} color="#fff" />}
+      </button>
     </div>
   );
 };
@@ -46,45 +44,73 @@ const Sidebar: React.FC = () => {
 const styles = {
   sidebar: {
     height: "100vh",
+    width: "100px",
     backgroundColor: "#182336",
     color: "white",
-    paddingTop: "20px",
     position: "fixed" as "fixed",
     top: 0,
     left: 0,
-    transition: "width 0.3s",
     display: "flex",
     flexDirection: "column" as "column",
     alignItems: "center",
+    paddingTop: "20px",
+    borderBottomRightRadius: "20px",
+    borderTopRightRadius: "20px",
   },
   logoContainer: {
-    display: "flex",
-    alignItems: "center",
     marginBottom: "20px",
   },
   logo: {
-    width: "120px",
-    transition: "none",
-  },
-  toggleButton: {
-    background: "none",
-    border: "none",
-    color: "white",
-    fontSize: "20px",
-    cursor: "pointer",
-    marginLeft: "10px",
+    width: "70px",
+    marginTop: "10px",
   },
   navLinks: {
     listStyle: "none",
     padding: 0,
-    width: "100%",
+    margin: 0,
+    display: "flex",
+    flexDirection: "column" as "column",
+    gap: "15px",
+  },
+  navItem: {
+    position: "relative" as "relative",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "50px",
+    height: "50px",
+    backgroundColor: "#2a3b5d",
+    borderRadius: "12px",
+    cursor: "pointer",
+    transition: "background 0.3s",
   },
   link: {
-    textDecoration: "none",
-    color: "white",
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    textDecoration: "none",
+  },
+  tooltip: {
+    position: "absolute" as "absolute",
+    left: "70px",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    color: "white",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    fontSize: "14px",
+    whiteSpace: "nowrap" as "nowrap",
+  },
+  toggleButton: {
+    marginTop: "auto",
+    marginBottom: "20px",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
     padding: "10px",
+    borderRadius: "50%",
+    transition: "background 0.3s ease-in-out",
   },
 };
 
