@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Footprints, SquarePen, Info, Sun, Moon } from "lucide-react";
 import logo from "../assets/img/logo.png";
+import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface SidebarProps {
   isDarkMode: boolean;
@@ -16,21 +17,57 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme }) => {
         <img src={logo} alt="Logo" style={styles.logo} />
       </div>
       <ul style={styles.navLinks}>
-        <li style={styles.navItem}>
-          <Link to="/" style={styles.link}>
-            <Footprints size={35} color="#fff" />
-          </Link>
-        </li>
-        <li style={styles.navItem}>
-          <Link to="/Anuncio" style={styles.link}>
-            <SquarePen size={35} color="#fff" />
-          </Link>
-        </li>
-        <li style={styles.navItem}>
-          <Link to="/sobre" style={styles.link}>
-            <Info size={35} color="#fff" />
-          </Link>
-        </li>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <li style={styles.navItem}>
+                <Link to="/" style={styles.link}>
+                  <Footprints size={35} color="#fff" />
+                </Link>
+              </li>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content style={styles.tooltipContent} side="right">
+                Produtos
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <li style={styles.navItem}>
+                <Link to="/Anuncio" style={styles.link}>
+                  <SquarePen size={35} color="#fff" />
+                </Link>
+              </li>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content style={styles.tooltipContent} side="right">
+                Anunciar
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <li style={styles.navItem}>
+                <Link to="/Sobre" style={styles.link}>
+                  <Info size={35} color="#fff" />
+                </Link>
+              </li>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content style={styles.tooltipContent} side="right">
+                Sobre
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
       </ul>
 
       {/* Toggle de Modo Escuro/Claro */}
@@ -45,7 +82,7 @@ const styles = {
   sidebar: {
     height: "100vh",
     width: "100px",
-    backgroundColor: "#182336",
+    background: "linear-gradient(135deg, #1e2a47, #151d33)",
     color: "white",
     position: "fixed" as "fixed",
     top: 0,
@@ -79,10 +116,15 @@ const styles = {
     alignItems: "center",
     width: "50px",
     height: "50px",
-    backgroundColor: "#2a3b5d",
+    background: "linear-gradient(145deg, #223355, #1a253f)",
     borderRadius: "12px",
     cursor: "pointer",
-    transition: "background 0.3s",
+    transition: "all 0.3s ease-in-out",
+    boxShadow: "3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.1)",
+  },
+  navItemHover: {
+    background: "#2a3b5d",
+    boxShadow: "0 0 12px rgba(0, 150, 255, 0.6)",
   },
   link: {
     display: "flex",
@@ -92,25 +134,26 @@ const styles = {
     height: "100%",
     textDecoration: "none",
   },
-  tooltip: {
-    position: "absolute" as "absolute",
-    left: "70px",
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    color: "white",
-    padding: "5px 10px",
-    borderRadius: "5px",
-    fontSize: "14px",
-    whiteSpace: "nowrap" as "nowrap",
-  },
   toggleButton: {
     marginTop: "auto",
     marginBottom: "20px",
-    background: "none",
+    background: "linear-gradient(145deg, #223355, #1a253f)",
     border: "none",
     cursor: "pointer",
     padding: "10px",
     borderRadius: "50%",
-    transition: "background 0.3s ease-in-out",
+    boxShadow: "3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.1)",
+    transition: "all 0.3s ease-in-out",
+  },
+  toggleButtonHover: {
+    boxShadow: "0 0 12px rgba(255, 200, 0, 0.8)",
+  },
+  tooltipContent: {
+    backgroundColor: "black",
+    color: "white",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    fontSize: "14px",
   },
 };
 
