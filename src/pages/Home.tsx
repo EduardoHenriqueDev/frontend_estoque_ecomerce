@@ -1,75 +1,69 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-type Produto = {
+type Tennis = {
   id: number;
   nome: string;
   numero: number;
   cor: string | null;
   preco: number | null;
   estoque: number | null;
-  imagem: string | null;  
+  imagem: string | null;
 };
 
-const Produtos = () => {
-  
-  const [produtos, setProdutos] = useState<Produto[]>([]);
+const TennisComponent: React.FC = () => {
+  const [tennis, setTennis] = useState<Tennis[]>([]);
   const [erro, setErro] = useState<string>("");
 
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/tennis")
       .then((response) => {
-        console.log("Dados recebidos:", response.data);  
-        
+        console.log("Dados recebidos:", response.data);
+
         if (Array.isArray(response.data)) {
-          setProdutos(response.data);  
+          setTennis(response.data);
         } else {
           setErro("Erro: Dados inválidos retornados pela API.");
         }
       })
       .catch((error) => {
-        setErro("Houve um erro ao buscar os produtos. Tente novamente mais tarde."); 
-        console.error("Erro ao buscar produtos:", error);
+        setErro("Houve um erro ao buscar os tênis. Tente novamente mais tarde.");
+        console.error("Erro ao buscar tênis:", error);
       });
   }, []);
 
   return (
-    <div style={styles.productContainer}>
+    <div style={styles.tennisContainer}>
       {erro && <div style={styles.error}>{erro}</div>}
 
-      {produtos.length === 0 ? (
-        <div>Carregando produtos...</div>
+      {tennis.length === 0 ? (
+        <div>Carregando tênis...</div>
       ) : (
-        produtos.map((produto) => (
-          <div className="product-card" style={styles.card} key={produto.id}>
-            <div style={styles.details}>
-              {produto.imagem && (
+        tennis.map((tennisItem) => (
+          <div className="tennis-card" style={styles.card} key={tennisItem.id}>
+            <div style={styles.imageContainer}>
+              {tennisItem.imagem && (
                 <img
-                  src={`http://localhost:8080/uploads/${produto.imagem}`} 
-                  alt={produto.nome}
-                  style={{
-                    width: "100%", 
-                    height: "150px", // Mantém a altura consistente
-                    objectFit: "contain", // Faz a imagem caber sem cortes
-                    display: "block", 
-                    borderRadius: "8px",
-                    marginBottom: "10px",
-                  }}
+                  src={`http://localhost:8080${tennisItem.imagem}`}
+                  alt={tennisItem.nome}
+                  style={styles.image}
                 />
               )}
-              <h3 style={styles.title}>{produto.nome}</h3>
+            </div>
+            <div style={styles.details}>
+              <h3 style={styles.title}>{tennisItem.nome}</h3>
               <p style={styles.text}>
-                <strong>Número:</strong> {produto.numero}
+                <strong>Número:</strong> {tennisItem.numero}
               </p>
               <p style={styles.text}>
-                <strong>Cor:</strong> {produto.cor || "Indefinida"}
+                <strong>Cor:</strong> {tennisItem.cor || "Indefinida"}
               </p>
               <p style={styles.text}>
-                <strong>Estoque:</strong> {produto.estoque !== null ? produto.estoque : "Indisponível"}
+                <strong>Estoque:</strong> {tennisItem.estoque !== null ? tennisItem.estoque : "Indisponível"}
               </p>
               <span style={styles.price}>
-                R$ {produto.preco !== null && produto.preco !== undefined ? produto.preco.toFixed(2) : "Sob consulta"}
+                R$ {tennisItem.preco ? tennisItem.preco.toFixed(2) : "Sob consulta"}
               </span>
               <button style={styles.button}>Adicionar ao Carrinho</button>
             </div>
@@ -81,13 +75,12 @@ const Produtos = () => {
 };
 
 const styles = {
-  productContainer: {
+  tennisContainer: {
     display: "flex",
-    flexWrap: "wrap" as "wrap",
+    flexWrap: "wrap" as const,
     gap: "20px",
-    justifyContent: "center" as "center",
+    justifyContent: "center" as const,
     margin: "20px auto",
-    marginLeft: "70px",
   },
   card: {
     width: "250px",
@@ -97,9 +90,28 @@ const styles = {
     overflow: "hidden",
     backgroundColor: "#fff",
     padding: "15px",
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center" as const,
+  },
+  imageContainer: {
+    width: "100%",
+    height: "180px",
+    display: "flex",
+    alignItems: "center" as const,
+    justifyContent: "center" as const,
+    overflow: "hidden",
+    backgroundColor: "#f5f5f5",
+    borderRadius: "8px",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover" as const,
   },
   details: {
-    textAlign: "center" as "center",
+    textAlign: "center" as const,
+    marginTop: "10px",
   },
   title: {
     fontSize: "18px",
@@ -131,5 +143,5 @@ const styles = {
     marginBottom: "20px",
   },
 };
+export default TennisComponent;
 
-export default Produtos;
