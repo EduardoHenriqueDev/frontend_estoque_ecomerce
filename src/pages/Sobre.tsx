@@ -46,7 +46,7 @@ const styles = {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f4f4f4",
+        backgroundColor: "#fff",
         padding: "20px",
     },
     card: {
