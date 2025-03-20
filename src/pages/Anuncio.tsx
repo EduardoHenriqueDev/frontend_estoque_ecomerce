@@ -79,11 +79,12 @@ const Anuncio: React.FC = () => {
                             </div>
 
                             <div style={styles.formGroup}>
-                                <label>Descrição:<span style={styles.mandatory}>*</span></label>
-                                <textarea
-                                    value={descricao}
-                                    onChange={(e) => setDescricao(e.target.value)}
-                                    style={styles.textareaSmall}
+                                <label>Preço:<span style={styles.mandatory}>*</span></label>
+                                <input
+                                    type="number"
+                                    value={preco}
+                                    onChange={(e) => setPreco(Number(e.target.value))}
+                                    style={styles.input}
                                     required
                                 />
                             </div>
@@ -121,17 +122,6 @@ const Anuncio: React.FC = () => {
                                 </div>
                             )}
                         </div>
-                    </div>
-
-                    <div style={styles.formGroup}>
-                        <label>Preço:<span style={styles.mandatory}>*</span></label>
-                        <input
-                            type="number"
-                            value={preco}
-                            onChange={(e) => setPreco(Number(e.target.value))}
-                            style={styles.input}
-                            required
-                        />
                     </div>
 
                     <div style={styles.formGroup}>
@@ -264,7 +254,7 @@ const styles = {
     },
     previewImage: {
         width: "300px",
-        height: "120px",
+        height: "200px",
         objectFit: "cover" as "cover",
         borderRadius: "5px",
     },

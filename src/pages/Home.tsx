@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { ShoppingCart } from "lucide-react";
 import axios from "axios";
 
 type Tennis = {
@@ -13,6 +14,7 @@ type Tennis = {
 const TennisComponent: React.FC = () => {
   const [tennis, setTennis] = useState<Tennis[]>([]);
   const [erro, setErro] = useState<string>("");
+  const [selectedTennis, setSelectedTennis] = useState<Tennis | null>(null);
 
   useEffect(() => {
     axios
@@ -42,7 +44,12 @@ const TennisComponent: React.FC = () => {
         <div>Carregando tênis...</div>
       ) : (
         tennis.map((tennisItem) => (
-          <div className="tennis-card" style={styles.card} key={tennisItem.id}>
+          <div
+            className="tennis-card"
+            style={styles.card}
+            key={tennisItem.id}
+            onClick={() => setSelectedTennis(tennisItem)}
+          >
             <div style={styles.imageContainer}>
               {tennisItem.imagem && (
                 <img
@@ -54,12 +61,6 @@ const TennisComponent: React.FC = () => {
             </div>
             <div style={styles.details}>
               <h3 style={styles.title}>{tennisItem.nome}</h3>
-              <p style={styles.text}>
-                <strong>Tamanho:</strong> {tennisItem.numero}
-              </p>
-              <p style={styles.text}>
-                <strong>Cor:</strong> {tennisItem.cor || "Indefinida"}
-              </p>
               <div style={styles.priceButtonContainer}>
                 <span style={styles.price}>
                   R${" "}
@@ -67,11 +68,41 @@ const TennisComponent: React.FC = () => {
                     ? tennisItem.preco.toFixed(2)
                     : "Sob consulta"}
                 </span>
-                <button style={styles.button}>Adicionar ao Carrinho</button>
+                <button style={styles.button}>
+                  <ShoppingCart size={25} />
+                </button>
               </div>
             </div>
           </div>
         ))
+      )}
+
+      {selectedTennis && (
+        <div style={styles.modalOverlay} onClick={() => setSelectedTennis(null)}>
+          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setSelectedTennis(null)} style={styles.closeButton}>×</button>
+            <div style={styles.modalContent}>
+              {selectedTennis.imagem && (
+                <img
+                  src={`http://localhost:8080${selectedTennis.imagem}`}
+                  alt={selectedTennis.nome}
+                  style={styles.modalImage}
+                />
+              )}
+              <div style={styles.modalDetails}>
+                <h2>{selectedTennis.nome}</h2>
+                <ul>
+                  <li><strong>Cor:</strong> {selectedTennis.cor || "Indisponível"}</li>
+                  <li><strong>Número:</strong> {selectedTennis.numero}</li>
+                  <li><strong>Preço:</strong> R${selectedTennis.preco ? selectedTennis.preco.toFixed(2) : "Sob consulta"}</li>
+                </ul>
+                <button style={styles.button}>
+                  <ShoppingCart size={25} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -84,13 +115,12 @@ const styles = {
     gap: "20px",
     justifyContent: "center" as const,
     margin: "20px auto",
-    marginLeft: "60px",
+    marginLeft: "100px",
   },
   card: {
     width: "250px",
     borderRadius: "10px",
-    border: "1px solid #ccc",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    boxShadow: "2px 4px 11px 9px rgba(0, 0, 0, 0.1)",
     overflow: "hidden",
     backgroundColor: "#fff",
     padding: "15px",
@@ -122,16 +152,13 @@ const styles = {
     fontWeight: "bold",
     marginBottom: "10px",
   },
-  text: {
-    fontSize: "14px",
-    marginBottom: "5px",
-  },
   priceButtonContainer: {
     display: "flex",
     alignItems: "center" as const,
     justifyContent: "space-between" as const,
     width: "100%",
     marginTop: "10px",
+    padding: "0 10px",
   },
   price: {
     fontSize: "16px",
@@ -139,18 +166,56 @@ const styles = {
   },
   button: {
     padding: "10px",
-    backgroundColor: "#007bff",
-    color: "#fff",
+    color: "#007bff",
     border: "none",
-    borderRadius: "5px",
     cursor: "pointer",
     transition: "background-color 0.3s",
-    marginLeft: "5px",
+    marginLeft: "90px",
   },
   error: {
     color: "red",
     fontSize: "16px",
     marginBottom: "20px",
+  },
+  modalOverlay: {
+    position: "fixed" as const,
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    justifyContent: "center" as const,
+    alignItems: "center" as const,
+  },
+  modal: {
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "10px",
+    textAlign: "center" as const,
+    position: "relative" as const,
+  },
+  modalContent: {
+    display: "flex",
+    alignItems: "center" as const,
+  },
+  modalImage: {
+    width: "200px",
+    height: "auto",
+    borderRadius: "8px",
+    marginRight: "20px",
+  },
+  modalDetails: {
+    textAlign: "left" as const,
+  },
+  closeButton: {
+    position: "absolute" as const,
+    top: "10px",
+    right: "10px",
+    border: "none",
+    background: "none",
+    fontSize: "30px",
+    cursor: "pointer",
   },
 };
 export default TennisComponent;
