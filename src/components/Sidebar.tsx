@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Footprints, SquarePen, Info, Sun, Moon } from "lucide-react";
+import { Footprints, SquarePen, Info, Sun, Moon, UserRound } from "lucide-react";
 import logo from "../assets/img/logo.png";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
@@ -63,6 +63,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme }) => {
             <Tooltip.Portal>
               <Tooltip.Content style={styles.tooltipContent} side="right">
                 Sobre
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <li style={styles.navItem}>
+                <Link to="/Auth" style={styles.link}>
+                  <UserRound size={35} color="#fff" />
+                </Link>
+              </li>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content style={styles.tooltipContent} side="right">
+                Perfil
                 <Tooltip.Arrow className="fill-black" />
               </Tooltip.Content>
             </Tooltip.Portal>

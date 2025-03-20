@@ -1,4 +1,3 @@
-import { link } from "fs";
 import React from "react";
 
 const Sobre: React.FC = () => {

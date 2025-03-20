@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Anuncio from "./pages/Anuncio";
 import Sobre from "./pages/Sobre";
+import Auth from "./pages/auth/Authentication";
 
 const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
@@ -32,6 +33,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/Anuncio" element={<Anuncio />} />
             <Route path="/Sobre" element={<Sobre />} />
+            <Route path="/Auth" element={<Auth />} />
           </Routes>
         </div>
       </div>
