@@ -22,6 +22,7 @@ const TennisComponent: React.FC = () => {
       .then((response) => {
         console.log("Dados recebidos:", response.data);
 
+        // Verificar se a resposta é um array válido
         if (Array.isArray(response.data)) {
           setTennis(response.data);
         } else {
@@ -47,16 +48,18 @@ const TennisComponent: React.FC = () => {
           <div
             className="tennis-card"
             style={styles.card}
-            key={tennisItem.id}
+            key={tennisItem.id} 
             onClick={() => setSelectedTennis(tennisItem)}
           >
             <div style={styles.imageContainer}>
-              {tennisItem.imagem && (
+              {tennisItem.imagem ? (
                 <img
                   src={`http://localhost:8080${tennisItem.imagem}`}
                   alt={tennisItem.nome}
                   style={styles.image}
                 />
+              ) : (
+                <div style={styles.placeholderImage}>Imagem indisponível</div>
               )}
             </div>
             <div style={styles.details}>
@@ -82,12 +85,14 @@ const TennisComponent: React.FC = () => {
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setSelectedTennis(null)} style={styles.closeButton}>×</button>
             <div style={styles.modalContent}>
-              {selectedTennis.imagem && (
+              {selectedTennis.imagem ? (
                 <img
                   src={`http://localhost:8080${selectedTennis.imagem}`}
                   alt={selectedTennis.nome}
                   style={styles.modalImage}
                 />
+              ) : (
+                <div style={styles.placeholderImage}>Imagem indisponível</div>
               )}
               <div style={styles.modalDetails}>
                 <h2>{selectedTennis.nome}</h2>
@@ -142,6 +147,16 @@ const styles = {
     width: "100%",
     height: "100%",
     objectFit: "cover" as const,
+  },
+  placeholderImage: {
+    color: "#888",
+    fontSize: "14px",
+    textAlign: "center" as const,
+    padding: "20px",
+    backgroundColor: "#ddd",
+    borderRadius: "8px",
+    width: "100%",
+    height: "100%",
   },
   details: {
     textAlign: "center" as const,
@@ -219,4 +234,5 @@ const styles = {
     cursor: "pointer",
   },
 };
+
 export default TennisComponent;

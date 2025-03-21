@@ -35,6 +35,12 @@ const Anuncio: React.FC = () => {
             return;
         }
 
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        if (!user.id) {
+            alert("Usuário não identificado. Faça login novamente.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("nome", nome);
         formData.append("numero", numero.toString());
@@ -42,6 +48,7 @@ const Anuncio: React.FC = () => {
         formData.append("estoque", estoque.toString());
         formData.append("cor", cor);
         formData.append("imagem", imagem);
+        formData.append("usuarioId", user.id);
 
         try {
             const response = await fetch("http://localhost:8080/api/tennis", {
@@ -59,6 +66,7 @@ const Anuncio: React.FC = () => {
             alert("Erro ao fazer requisição.");
         }
     };
+
 
     return (
         <div style={styles.container}>
