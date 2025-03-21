@@ -1,8 +1,74 @@
 import React, { useState } from "react";
 import * as Switch from "@radix-ui/react-switch";
+import { useNavigate } from "react-router-dom";
 
-const Auth: React.FC = () => {
+interface AuthProps {
+    onLoginSuccess: () => void;
+}
+
+const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
     const [isRegister, setIsRegister] = useState(false);
+
+    const [name, setName] = useState("");
+    const [registerEmail, setRegisterEmail] = useState("");
+    const [registerPassword, setRegisterPassword] = useState("");
+
+    const [loginEmail, setLoginEmail] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
+
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log("Enviando Cadastro:", { name, registerEmail, registerPassword });
+
+        const response = await fetch("http://localhost:8080/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                nome: name,
+                email: registerEmail,
+                senha: registerPassword,
+            }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert("Cadastro realizado com sucesso!");
+            setIsRegister(false);
+        } else {
+            alert(data.message || "Erro ao cadastrar.");
+        }
+    };
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log("Enviando Login:", { loginEmail, loginPassword });
+
+        const response = await fetch("http://localhost:8080/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: loginEmail,
+                senha: loginPassword,
+            }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert("Login realizado com sucesso!");
+
+            if (data.user) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+                onLoginSuccess();
+                navigate("/");
+            } else {
+                alert("Erro: Dados do usuário não encontrados.");
+            }
+        } else {
+            alert(data.message || "Erro ao fazer login.");
+        }
+    };
+
+    const navigate = useNavigate();
 
     return (
         <div style={styles.container}>
@@ -29,36 +95,72 @@ const Auth: React.FC = () => {
                 </div>
 
                 {!isRegister ? (
-                    <form>
+                    <form onSubmit={handleLogin}>
                         <h2 style={styles.title}>Login</h2>
                         <div style={styles.inputGroup}>
                             <label style={styles.label}>E-mail</label>
-                            <input type="email" style={styles.input} placeholder="Digite seu e-mail" required />
+                            <input
+                                type="email"
+                                style={styles.input}
+                                placeholder="Digite seu e-mail"
+                                required
+                                value={loginEmail}
+                                onChange={(e) => setLoginEmail(e.target.value)}
+                            />
                         </div>
 
                         <div style={styles.inputGroup}>
                             <label style={styles.label}>Senha</label>
-                            <input type="password" style={styles.input} placeholder="Digite sua senha" required />
+                            <input
+                                type="password"
+                                style={styles.input}
+                                placeholder="Digite sua senha"
+                                required
+                                value={loginPassword}
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                            />
                         </div>
 
                         <button type="submit" style={styles.buttonLogin}>Entrar</button>
                     </form>
                 ) : (
-                    <form>
+                    /* Formulário de Cadastro */
+                    <form onSubmit={handleRegister}>
                         <h2 style={styles.title}>Cadastro</h2>
                         <div style={styles.inputGroup}>
                             <label style={styles.label}>Nome</label>
-                            <input type="text" style={styles.input} placeholder="Digite seu nome" required />
+                            <input
+                                type="text"
+                                style={styles.input}
+                                placeholder="Digite seu nome"
+                                required
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                            />
                         </div>
 
                         <div style={styles.inputGroup}>
                             <label style={styles.label}>E-mail</label>
-                            <input type="email" style={styles.input} placeholder="Digite seu e-mail" required />
+                            <input
+                                type="email"
+                                style={styles.input}
+                                placeholder="Digite seu e-mail"
+                                required
+                                value={registerEmail}
+                                onChange={(e) => setRegisterEmail(e.target.value)}
+                            />
                         </div>
 
                         <div style={styles.inputGroup}>
                             <label style={styles.label}>Senha</label>
-                            <input type="password" style={styles.input} placeholder="Digite sua senha" required />
+                            <input
+                                type="password"
+                                style={styles.input}
+                                placeholder="Digite sua senha"
+                                required
+                                value={registerPassword}
+                                onChange={(e) => setRegisterPassword(e.target.value)}
+                            />
                         </div>
 
                         <button type="submit" style={styles.buttonRegister}>Cadastrar</button>
@@ -164,6 +266,11 @@ const styles = {
         cursor: "pointer",
         transition: "background-color 0.3s ease",
         border: "0",
+    },
+    message: {
+        color: "#d9534f",
+        fontSize: "14px",
+        marginBottom: "10px",
     },
 };
 

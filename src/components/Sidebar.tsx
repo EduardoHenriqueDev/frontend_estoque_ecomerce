@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme }) => {
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
               <li style={styles.navItem}>
-                <Link to="/Auth" style={styles.link}>
+                <Link to="/Perfil" style={styles.link}>
                   <UserRound size={35} color="#fff" />
                 </Link>
               </li>

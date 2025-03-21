@@ -166,6 +166,7 @@ const styles = {
   },
   button: {
     padding: "10px",
+    backgroundColor: "#fff",
     color: "#007bff",
     border: "none",
     cursor: "pointer",
