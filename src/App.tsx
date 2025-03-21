@@ -12,6 +12,13 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
+    // Verifica se o usuário já está autenticado no localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setIsAuthenticated(true);
+    }
+
+    // Ajusta o tema da página com base no estado
     document.body.style.backgroundColor = isDarkMode ? "#ffffff" : "#2e2e2e";
     document.body.style.color = isDarkMode ? "#000" : "#fff";
 
@@ -40,7 +47,7 @@ const App: React.FC = () => {
             <Route path="/Anuncio" element={<Anuncio />} />
             <Route path="/Sobre" element={<Sobre />} />
             <Route path="/Auth" element={<Auth onLoginSuccess={() => setIsAuthenticated(true)} />} />
-            <Route path="/Perfil" element={<Perfil/>}></Route>
+            <Route path="/Perfil" element={<Perfil />} />
           </Routes>
         </div>
       </div>

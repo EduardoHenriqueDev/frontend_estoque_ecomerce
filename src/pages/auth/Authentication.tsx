@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Switch from "@radix-ui/react-switch";
 import { useNavigate } from "react-router-dom";
 
@@ -15,6 +15,17 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
 
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
+
+    const navigate = useNavigate();
+
+    // Verifica se o usuário está logado ao carregar a página
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            // Se o usuário já estiver no localStorage, redireciona para a página principal
+            navigate("/");
+        }
+    }, [navigate]);
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -67,8 +78,6 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
             alert(data.message || "Erro ao fazer login.");
         }
     };
-
-    const navigate = useNavigate();
 
     return (
         <div style={styles.container}>
@@ -124,7 +133,6 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                         <button type="submit" style={styles.buttonLogin}>Entrar</button>
                     </form>
                 ) : (
-                    /* Formulário de Cadastro */
                     <form onSubmit={handleRegister}>
                         <h2 style={styles.title}>Cadastro</h2>
                         <div style={styles.inputGroup}>

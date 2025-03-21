@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ShoppingCart } from "lucide-react";
+import { Trash2 } from "lucide-react"; // Importando o ícone de lixeira
 
 const Profile: React.FC = () => {
     const [user, setUser] = useState<any>(null);
@@ -30,6 +30,23 @@ const Profile: React.FC = () => {
             }
         } catch (error) {
             console.error("Erro ao fazer a requisição", error);
+        }
+    };
+
+    const handleDelete = async (tennisId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/tennis/${tennisId}`, {
+                method: "DELETE",
+            });
+            if (response.ok) {
+                setTennisList((prevTennisList) =>
+                    prevTennisList.filter((tennis) => tennis.id !== tennisId)
+                );
+            } else {
+                console.error("Erro ao excluir o tênis", response.status);
+            }
+        } catch (error) {
+            console.error("Erro ao fazer a requisição de exclusão", error);
         }
     };
 
@@ -76,6 +93,12 @@ const Profile: React.FC = () => {
                                     <p style={styles.tennisDetails}>{`Preço: R$ ${tennis.preco.toFixed(2)}`}</p>
                                     <p style={styles.tennisDetails}>{`Estoque: ${tennis.estoque}`}</p>
                                 </div>
+                                <div
+                                    style={styles.deleteIcon}
+                                    onClick={() => handleDelete(tennis.id)}
+                                >
+                                    <Trash2 size={24} color="#fff" />
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -91,8 +114,8 @@ const styles = {
         flexDirection: "column" as "column",
         justifyContent: "flex-start",
         alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#f4f4f9",
+        minHeight: "70vh",
+        backgroundColor: "#fff",
         padding: "20px",
         marginTop: "0",
         marginLeft: "100px",
@@ -133,9 +156,9 @@ const styles = {
     },
     name: {
         fontSize: "28px",
-        fontWeight: "600",
-        color: "#333",
-        marginBottom: "10px",
+        fontWeight: "bold",
+        color: "#000",
+        marginBottom: "5px",
     },
     email: {
         fontSize: "18px",
@@ -153,9 +176,9 @@ const styles = {
         textAlign: "center" as const,
     },
     tennisListTitle: {
-        fontSize: "24px",
-        fontWeight: "600",
-        color: "#333",
+        fontSize: "28px",
+        fontWeight: "bold",
+        color: "#000",
     },
     noTennis: {
         fontSize: "18px",
@@ -176,6 +199,7 @@ const styles = {
         display: "flex",
         flexDirection: "column" as const,
         alignItems: "center" as const,
+        position: "relative" as "relative", // Posição relativa para o card
     },
     imageContainer: {
         width: "100%",
@@ -215,6 +239,15 @@ const styles = {
         fontSize: "16px",
         color: "#777",
         marginBottom: "5px",
+    },
+    deleteIcon: {
+        position: "absolute" as "absolute",
+        top: "10px",
+        right: "10px",
+        cursor: "pointer",
+        backgroundColor: "#ff0000",
+        borderRadius: "20px",
+        padding: "5px",
     },
 };
 

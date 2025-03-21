@@ -4,7 +4,6 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 
 const Anuncio: React.FC = () => {
     const [nome, setNome] = useState("");
-    const [descricao, setDescricao] = useState("");
     const [preco, setPreco] = useState<number>(0);
     const [numero, setNumero] = useState<number>(0);
     const [estoque, setEstoque] = useState<number>(0);
