@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Anuncio from "./pages/Anuncio";
@@ -12,13 +12,11 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    // Verifica se o usuário já está autenticado no localStorage
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setIsAuthenticated(true);
     }
 
-    // Ajusta o tema da página com base no estado
     document.body.style.backgroundColor = isDarkMode ? "#ffffff" : "#2e2e2e";
     document.body.style.color = isDarkMode ? "#000" : "#fff";
 
@@ -33,10 +31,15 @@ const App: React.FC = () => {
     setIsDarkMode(!isDarkMode);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setIsAuthenticated(false);
+  };
+
   return (
     <Router>
       <div style={{ display: "flex" }}>
-        {isAuthenticated && <Sidebar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />}
+        {isAuthenticated && <Sidebar isDarkMode={isDarkMode} toggleTheme={toggleTheme} handleLogout={handleLogout} />}
 
         <div style={{ flex: 1 }}>
           <Routes>

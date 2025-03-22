@@ -6,11 +6,13 @@ const Anuncio: React.FC = () => {
     const [nome, setNome] = useState("");
     const [preco, setPreco] = useState<number>(0);
     const [numero, setNumero] = useState<number>(0);
-    const [estoque, setEstoque] = useState<number>(0);
+    const [marca, setMarca] = useState("");
     const [imagem, setImagem] = useState<File | null>(null);
     const [preview, setPreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState("Nenhum arquivo escolhido");
     const [cor, setCor] = useState("");
+
+    const marcasDisponiveis = ["Nike", "Jordan", "Adidas", "Puma", "Vans", "Reebok", "Asics", "Mizuno"];
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -44,7 +46,7 @@ const Anuncio: React.FC = () => {
         formData.append("nome", nome);
         formData.append("numero", numero.toString());
         formData.append("preco", preco.toString());
-        formData.append("estoque", estoque.toString());
+        formData.append("marca", marca);
         formData.append("cor", cor);
         formData.append("imagem", imagem);
         formData.append("usuarioId", user.id);
@@ -143,14 +145,13 @@ const Anuncio: React.FC = () => {
                     </div>
 
                     <div style={styles.formGroup}>
-                        <label>Estoque:<span style={styles.mandatory}>*</span></label>
-                        <input
-                            type="number"
-                            value={estoque}
-                            onChange={(e) => setEstoque(Number(e.target.value))}
-                            style={styles.input}
-                            required
-                        />
+                        <label>Marca:<span style={styles.mandatory}>*</span></label>
+                        <select value={marca} onChange={(e) => setMarca(e.target.value)} style={styles.input} required>
+                            <option value="">Selecione uma marca</option>
+                            {marcasDisponiveis.map((marca, index) => (
+                                <option key={index} value={marca}>{marca}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <div style={styles.formGroup}>

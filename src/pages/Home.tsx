@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Search } from "lucide-react";
 import axios from "axios";
+
+const marcasDisponiveis = ["Nike", "Jordan", "Adidas", "Puma", "Vans", "Reebok", "Asics", "Mizuno"];
 
 type Tennis = {
   id: number;
   nome: string;
+  marca: string;
   numero: number;
   cor: string | null;
   preco: number | null;
@@ -15,6 +18,8 @@ const TennisComponent: React.FC = () => {
   const [tennis, setTennis] = useState<Tennis[]>([]);
   const [erro, setErro] = useState<string>("");
   const [selectedTennis, setSelectedTennis] = useState<Tennis | null>(null);
+  const [marcaFiltro, setMarcaFiltro] = useState<string>("");
+  const [termoBusca, setTermoBusca] = useState<string>("");
 
   useEffect(() => {
     axios
@@ -22,7 +27,6 @@ const TennisComponent: React.FC = () => {
       .then((response) => {
         console.log("Dados recebidos:", response.data);
 
-        // Verificar se a resposta é um array válido
         if (Array.isArray(response.data)) {
           setTennis(response.data);
         } else {
@@ -30,102 +34,138 @@ const TennisComponent: React.FC = () => {
         }
       })
       .catch((error) => {
-        setErro(
-          "Houve um erro ao buscar os tênis. Tente novamente mais tarde."
-        );
+        setErro("Houve um erro ao buscar os tênis. Tente novamente mais tarde.");
         console.error("Erro ao buscar tênis:", error);
       });
   }, []);
 
+  const tennisFiltrados = tennis.filter(
+    (tennisItem) =>
+      (marcaFiltro ? tennisItem.marca === marcaFiltro : true) &&
+      (termoBusca ? tennisItem.nome.toLowerCase().includes(termoBusca.toLowerCase()) : true)
+  );
+
   return (
-    <div style={styles.tennisContainer}>
-      {erro && <div style={styles.error}>{erro}</div>}
-
-      {tennis.length === 0 ? (
-        <div>Carregando tênis...</div>
-      ) : (
-        tennis.map((tennisItem) => (
-          <div
-            className="tennis-card"
-            style={styles.card}
-            key={tennisItem.id} 
-            onClick={() => setSelectedTennis(tennisItem)}
-          >
-            <div style={styles.imageContainer}>
-              {tennisItem.imagem ? (
-                <img
-                  src={`http://localhost:8080${tennisItem.imagem}`}
-                  alt={tennisItem.nome}
-                  style={styles.image}
-                />
-              ) : (
-                <div style={styles.placeholderImage}>Imagem indisponível</div>
-              )}
-            </div>
-            <div style={styles.details}>
-              <h3 style={styles.title}>{tennisItem.nome}</h3>
-              <div style={styles.priceButtonContainer}>
-                <span style={styles.price}>
-                  R${" "}
-                  {tennisItem.preco
-                    ? tennisItem.preco.toFixed(2)
-                    : "Sob consulta"}
-                </span>
-                <button style={styles.button}>
-                  <ShoppingCart size={25} />
-                </button>
-              </div>
-            </div>
-          </div>
-        ))
-      )}
-
-      {selectedTennis && (
-        <div style={styles.modalOverlay} onClick={() => setSelectedTennis(null)}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setSelectedTennis(null)} style={styles.closeButton}>×</button>
-            <div style={styles.modalContent}>
-              {selectedTennis.imagem ? (
-                <img
-                  src={`http://localhost:8080${selectedTennis.imagem}`}
-                  alt={selectedTennis.nome}
-                  style={styles.modalImage}
-                />
-              ) : (
-                <div style={styles.placeholderImage}>Imagem indisponível</div>
-              )}
-              <div style={styles.modalDetails}>
-                <h2>{selectedTennis.nome}</h2>
-                <ul>
-                  <li><strong>Cor:</strong> {selectedTennis.cor || "Indisponível"}</li>
-                  <li><strong>Número:</strong> {selectedTennis.numero}</li>
-                  <li><strong>Preço:</strong> R${selectedTennis.preco ? selectedTennis.preco.toFixed(2) : "Sob consulta"}</li>
-                </ul>
-                <button style={styles.button}>
-                  <ShoppingCart size={25} />
-                </button>
-              </div>
-            </div>
-          </div>
+    <div>
+      <div style={styles.filterContainer}>
+        <select
+          style={styles.select}
+          value={marcaFiltro}
+          onChange={(e) => setMarcaFiltro(e.target.value)}
+        >
+          <option value="">Todas as Marcas</option>
+          {marcasDisponiveis.map((marca) => (
+            <option key={marca} value={marca}>
+              {marca}
+            </option>
+          ))}
+        </select>
+        <div style={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Buscar por nome..."
+            value={termoBusca}
+            onChange={(e) => setTermoBusca(e.target.value)}
+            style={styles.searchBar}
+          />
+          <Search size={20} style={styles.searchIcon} />
         </div>
-      )}
+      </div>
+
+      <div style={styles.tennisContainer}>
+        {erro && <div style={styles.error}>{erro}</div>}
+
+        {tennisFiltrados.length === 0 ? (
+          <div>Nenhum tênis encontrado.</div>
+        ) : (
+          tennisFiltrados.map((tennisItem) => (
+            <div
+              className="tennis-card"
+              style={styles.card}
+              key={tennisItem.id}
+              onClick={() => setSelectedTennis(tennisItem)}
+            >
+              <div style={styles.imageContainer}>
+                {tennisItem.imagem ? (
+                  <img
+                    src={`http://localhost:8080${tennisItem.imagem}`}
+                    alt={tennisItem.nome}
+                    style={styles.image}
+                  />
+                ) : (
+                  <div style={styles.placeholderImage}>Imagem indisponível</div>
+                )}
+              </div>
+              <div style={styles.details}>
+                <h3 style={styles.title}>{tennisItem.nome}</h3>
+                <span style={styles.brand}>{tennisItem.marca}</span>
+                <div style={styles.priceButtonContainer}>
+                  <span style={styles.price}>
+                    R${tennisItem.preco ? tennisItem.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "Sob consulta"}
+                  </span>
+                  <button style={styles.button}>
+                    <ShoppingCart size={25} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
 
 const styles = {
+  filterContainer: {
+    display: "flex",
+    justifyContent: "left",
+    margin: "20px",
+    marginLeft: "120px",
+  },
+  select: {
+    padding: "5px",
+    marginBottom: "20px",
+    fontSize: "16px",
+    borderRadius: "30px",
+    fontWeight: "bold",
+  },
+  searchContainer: {
+    display: "flex",
+    marginLeft: "20px",
+  },
+  searchBar: {
+    padding: "5px",
+    fontSize: "16px",
+    borderRadius: "30px",
+    border: "2px solid #000000",
+    width: "500px",
+    height: "20px",
+    marginLeft: "300px",
+  },
+  searchIcon: {
+    marginLeft: "10px",
+    cursor: "pointer",
+  },
+  brand: {
+    fontSize: "14px",
+    color: "#555",
+    fontWeight: "bold",
+    marginBottom: "5px",
+    textTransform: "uppercase" as const,
+  },
   tennisContainer: {
     display: "flex",
     flexWrap: "wrap" as const,
     gap: "20px",
     justifyContent: "center" as const,
     margin: "20px auto",
-    marginLeft: "100px",
+    marginLeft: "120px",
   },
   card: {
     width: "250px",
     borderRadius: "10px",
-    boxShadow: "2px 4px 11px 9px rgba(0, 0, 0, 0.1)",
+    boxShadow: "2px 4px 11px 8px rgba(0, 0, 0, 0.1)",
     overflow: "hidden",
     backgroundColor: "#fff",
     padding: "15px",
@@ -163,7 +203,7 @@ const styles = {
     marginTop: "10px",
   },
   title: {
-    fontSize: "18px",
+    fontSize: "14px",
     fontWeight: "bold",
     marginBottom: "10px",
   },
@@ -172,7 +212,7 @@ const styles = {
     alignItems: "center" as const,
     justifyContent: "space-between" as const,
     width: "100%",
-    marginTop: "10px",
+    marginTop: "auto",
     padding: "0 10px",
   },
   price: {
