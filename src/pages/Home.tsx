@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ShoppingCart, Search } from "lucide-react";
+import { ShoppingCart, Search, X } from "lucide-react";
 import axios from "axios";
 
 const marcasDisponiveis = ["Nike", "Jordan", "Adidas", "Puma", "Vans", "Reebok", "Asics", "Mizuno"];
@@ -112,6 +112,32 @@ const TennisComponent: React.FC = () => {
           ))
         )}
       </div>
+
+      {selectedTennis && (
+        <div style={styles.modalOverlay} onClick={() => setSelectedTennis(null)}>
+          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button style={styles.closeButton} onClick={() => setSelectedTennis(null)}>
+              <X size={25} />
+            </button>
+            <div style={styles.modalContent}>
+              {selectedTennis.imagem && (
+                <img
+                  src={`http://localhost:8080${selectedTennis.imagem}`}
+                  alt={selectedTennis.nome}
+                  style={styles.modalImage}
+                />
+              )}
+              <div style={styles.modalDetails}>
+                <h2 style={styles.modalTitle}>{selectedTennis.nome}</h2>
+                <p style={styles.modalBrand}>{selectedTennis.marca}</p>
+                <p><strong>Número:</strong> {selectedTennis.numero}</p>
+                <p><strong>Cor:</strong> {selectedTennis.cor || "Indisponível"}</p>
+                <p style={styles.modalPrice}>R${selectedTennis.preco ? selectedTennis.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "Sob consulta"}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -129,16 +155,18 @@ const styles = {
     fontSize: "16px",
     borderRadius: "30px",
     fontWeight: "bold",
+    border: "2px solid #ff0000",
   },
   searchContainer: {
     display: "flex",
     marginLeft: "20px",
+    alignItems: "center",
   },
   searchBar: {
     padding: "5px",
     fontSize: "16px",
     borderRadius: "30px",
-    border: "2px solid #000000",
+    border: "2px solid #ff0000",
     width: "500px",
     height: "20px",
     marginLeft: "300px",
@@ -256,13 +284,26 @@ const styles = {
     alignItems: "center" as const,
   },
   modalImage: {
-    width: "200px",
+    width: "500px",
     height: "auto",
     borderRadius: "8px",
     marginRight: "20px",
   },
   modalDetails: {
     textAlign: "left" as const,
+  },
+  modalTitle: {
+    fontSize: "-webkit-xxx-large",
+    margin: "0",
+  },
+  modalBrand: {
+    fontSize: "xx-large",
+    color: "#555",
+    fontWeight: "bold",
+  },
+  modalPrice: {
+    fontSize: "-webkit-xxx-large",
+    fontWeight: "bold",
   },
   closeButton: {
     position: "absolute" as const,

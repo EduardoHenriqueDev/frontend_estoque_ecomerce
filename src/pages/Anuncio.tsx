@@ -181,7 +181,7 @@ const styles = {
         display: "flex",
         justifyContent: "center",
         padding: "40px 0",
-        minHeight: "100vh",
+        height: "50vh",
         backgroundColor: "#fff",
     },
     card: {
