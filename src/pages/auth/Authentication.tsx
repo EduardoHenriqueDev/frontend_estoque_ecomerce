@@ -15,19 +15,16 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
 
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false); // Estado para lembrar de mim
+    const [rememberMe, setRememberMe] = useState(false);
 
     const navigate = useNavigate();
 
-    // Verifica se o usuário está logado ao carregar a página
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
-            // Se o usuário já estiver no localStorage, redireciona para a página principal
             navigate("/");
         }
 
-        // Verifica se as credenciais de login estão armazenadas
         const savedEmail = localStorage.getItem("email");
         const savedPassword = localStorage.getItem("password");
 
@@ -82,12 +79,10 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                 localStorage.setItem("user", JSON.stringify(data.user));
                 onLoginSuccess();
 
-                // Salva as credenciais se "Lembrar de mim" estiver marcado
                 if (rememberMe) {
                     localStorage.setItem("email", loginEmail);
                     localStorage.setItem("password", loginPassword);
                 } else {
-                    // Caso contrário, remove as credenciais armazenadas
                     localStorage.removeItem("email");
                     localStorage.removeItem("password");
                 }

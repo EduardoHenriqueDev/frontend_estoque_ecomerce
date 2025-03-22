@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Trash2 } from "lucide-react"; // Importando o ícone de lixeira
+import { Trash2, Settings } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Profile: React.FC = () => {
     const [user, setUser] = useState<any>(null);
     const [tennisList, setTennisList] = useState<any[]>([]);
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -16,6 +18,14 @@ const Profile: React.FC = () => {
             } catch (error) {
                 console.error("Erro ao parsear os dados do usuário", error);
             }
+        }
+
+        const savedTheme = localStorage.getItem('isDarkMode');
+        if (savedTheme) {
+            const darkMode = JSON.parse(savedTheme);
+            setIsDarkMode(darkMode);
+            document.body.style.backgroundColor = darkMode ? "#333" : "#ffffff";
+            document.body.style.color = darkMode ? "#fff" : "#000";
         }
     }, []);
 
@@ -55,7 +65,17 @@ const Profile: React.FC = () => {
     }
 
     return (
-        <div style={styles.container}>
+        <div style={{ ...styles.container, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}>
+            <div style={styles.settingsContainer}>
+                <div style={styles.settingsIcon}>
+                    <Link to="/Config">
+                        <Settings
+                            size={28}
+                            color={isDarkMode ? "#fff" : "#000"}
+                        />
+                    </Link>
+                </div>
+            </div>
             <div style={styles.profileInfo}>
                 <div style={styles.avatarContainer}>
                     <div style={styles.avatar}>
@@ -63,19 +83,19 @@ const Profile: React.FC = () => {
                     </div>
                 </div>
                 <div style={styles.infoContainer}>
-                    <h2 style={styles.name}>{user.nome}</h2>
-                    <p style={styles.email}>{user.email}</p>
+                    <h2 style={{ ...styles.name, color: isDarkMode ? "#fff" : "#000" }}>{user.nome}</h2>
+                    <p style={{ ...styles.email, color: isDarkMode ? "#ccc" : "#555" }}>{user.email}</p>
                 </div>
             </div>
 
             <div style={styles.tennisListContainer}>
-                <h3 style={styles.tennisListTitle}>Seus Anúncios ({tennisList.length})</h3>
+                <h3 style={{ ...styles.tennisListTitle, color: isDarkMode ? "#fff" : "#000" }}>Seus Anúncios ({tennisList.length})</h3>
                 {tennisList.length === 0 ? (
                     <p style={styles.noTennis}>Você ainda não tem anúncios.</p>
                 ) : (
                     <div style={styles.tennisList}>
                         {tennisList.map((tennis: any) => (
-                            <div key={tennis.id} style={styles.tennisCard}>
+                            <div key={tennis.id} style={{ ...styles.tennisCard, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}>
                                 <div style={styles.imageContainer}>
                                     {tennis.imagem ? (
                                         <img
@@ -87,10 +107,10 @@ const Profile: React.FC = () => {
                                         <div style={styles.placeholderImage}>Imagem indisponível</div>
                                     )}
                                 </div>
-                                <div style={styles.tennisInfo}>
+                                <div style={{ ...styles.tennisInfo, color: isDarkMode ? "#ccc" : "#555" }}>
                                     <h4 style={styles.tennisName}>{tennis.nome}</h4>
                                     <p style={styles.tennisDetails}>{`Número: ${tennis.numero}`}</p>
-                                    <p style={styles.tennisDetails}>{`Preço: R$ ${tennis.preco.toFixed(2)}`}</p>
+                                    <p style={styles.tennisDetails}>{`Preço: R$ R${tennis.preco ? tennis.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "Sob consulta"}`}</p>
                                     <p style={styles.tennisDetails}>{`Marca: ${tennis.marca}`}</p>
                                 </div>
                                 <div
@@ -118,7 +138,6 @@ const styles = {
         backgroundColor: "#fff",
         padding: "20px",
         marginTop: "0",
-        marginLeft: "100px",
     },
     profileInfo: {
         display: "flex",
@@ -248,6 +267,14 @@ const styles = {
         backgroundColor: "#ff0000",
         borderRadius: "20px",
         padding: "5px",
+    },
+    settingsContainer: {
+        position: "absolute" as "absolute",
+        top: "100px",
+        right: "100px",
+    },
+    settingsIcon: {
+        cursor: "pointer",
     },
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Footprints, SquarePen, Info, LogOut, UserRound } from "lucide-react";
+import { Footprints, SquarePen, LogOut, UserRound } from "lucide-react";
 import logo from "../assets/img/logo.png";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
@@ -47,23 +47,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme, handleLogout
             <Tooltip.Portal>
               <Tooltip.Content style={styles.tooltipContent} side="right">
                 Anunciar
-                <Tooltip.Arrow className="fill-black" />
-              </Tooltip.Content>
-            </Tooltip.Portal>
-          </Tooltip.Root>
-        </Tooltip.Provider>
-        <Tooltip.Provider>
-          <Tooltip.Root>
-            <Tooltip.Trigger asChild>
-              <li style={styles.navItem}>
-                <Link to="/Sobre" style={styles.link}>
-                  <Info size={35} color="#fff" />
-                </Link>
-              </li>
-            </Tooltip.Trigger>
-            <Tooltip.Portal>
-              <Tooltip.Content style={styles.tooltipContent} side="right">
-                Sobre
                 <Tooltip.Arrow className="fill-black" />
               </Tooltip.Content>
             </Tooltip.Portal>

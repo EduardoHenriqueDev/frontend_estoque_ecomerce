@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Upload, X } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
@@ -68,10 +68,22 @@ const Anuncio: React.FC = () => {
         }
     };
 
+    const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('isDarkMode');
+        if (savedTheme) {
+            const darkMode = JSON.parse(savedTheme);
+            setIsDarkMode(darkMode);
+            document.body.style.backgroundColor = darkMode ? "#333" : "#ffffff";
+            document.body.style.color = darkMode ? "#fff" : "#000";
+        }
+    }, []);
+
 
     return (
-        <div style={styles.container}>
-            <div style={styles.card}>
+        <div style={{ ...styles.container, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}>
+            <div style={{ ...styles.card, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}>
                 <h2 style={styles.title}>Criar Anúncio</h2>
                 <form onSubmit={handleSubmit}>
                     <div style={styles.formRow}>
@@ -190,7 +202,6 @@ const styles = {
         borderRadius: "10px",
         backgroundColor: "#fff",
         textAlign: "center" as "center",
-        marginLeft: "90px",
         display: "flex",
         flexDirection: "column" as "column",
         minHeight: "80vh",
@@ -199,7 +210,7 @@ const styles = {
         marginBottom: "20px",
         fontSize: "30px",
         fontWeight: "bold",
-        backgroundColor: "#1C1C1C",
+        backgroundColor: "#ff0000",
         color: "#fff",
         borderRadius: "30px",
     },
@@ -252,7 +263,7 @@ const styles = {
         display: "none",
     },
     uploadButton: {
-        backgroundColor: "#1C1C1C",
+        backgroundColor: "#ff0000",
         color: "#fff",
         padding: "8px 12px",
         borderRadius: "50px",
@@ -286,7 +297,7 @@ const styles = {
     button: {
         width: "100%",
         padding: "10px",
-        backgroundColor: "#1C1C1C",
+        backgroundColor: "#ff0000",
         color: "#fff",
         border: "none",
         borderRadius: "50px",

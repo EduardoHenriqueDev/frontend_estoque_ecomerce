@@ -20,13 +20,12 @@ const TennisComponent: React.FC = () => {
   const [selectedTennis, setSelectedTennis] = useState<Tennis | null>(null);
   const [marcaFiltro, setMarcaFiltro] = useState<string>("");
   const [termoBusca, setTermoBusca] = useState<string>("");
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/tennis")
       .then((response) => {
-        console.log("Dados recebidos:", response.data);
-
         if (Array.isArray(response.data)) {
           setTennis(response.data);
         } else {
@@ -35,8 +34,15 @@ const TennisComponent: React.FC = () => {
       })
       .catch((error) => {
         setErro("Houve um erro ao buscar os tênis. Tente novamente mais tarde.");
-        console.error("Erro ao buscar tênis:", error);
       });
+
+    const savedTheme = localStorage.getItem('isDarkMode');
+    if (savedTheme) {
+      const darkMode = JSON.parse(savedTheme);
+      setIsDarkMode(darkMode);
+      document.body.style.backgroundColor = darkMode ? "#2e2e2e" : "#ffffff";
+      document.body.style.color = darkMode ? "#fff" : "#000";
+    }
   }, []);
 
   const tennisFiltrados = tennis.filter(
@@ -49,7 +55,7 @@ const TennisComponent: React.FC = () => {
     <div>
       <div style={styles.filterContainer}>
         <select
-          style={styles.select}
+          style={{ ...styles.select, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}
           value={marcaFiltro}
           onChange={(e) => setMarcaFiltro(e.target.value)}
         >
@@ -66,7 +72,7 @@ const TennisComponent: React.FC = () => {
             placeholder="Buscar por nome..."
             value={termoBusca}
             onChange={(e) => setTermoBusca(e.target.value)}
-            style={styles.searchBar}
+            style={{ ...styles.searchBar, backgroundColor: isDarkMode ? "#333" : "#fff"}}
           />
           <Search size={20} style={styles.searchIcon} />
         </div>
@@ -81,7 +87,7 @@ const TennisComponent: React.FC = () => {
           tennisFiltrados.map((tennisItem) => (
             <div
               className="tennis-card"
-              style={styles.card}
+              style={{ ...styles.card, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}
               key={tennisItem.id}
               onClick={() => setSelectedTennis(tennisItem)}
             >
@@ -98,7 +104,7 @@ const TennisComponent: React.FC = () => {
               </div>
               <div style={styles.details}>
                 <h3 style={styles.title}>{tennisItem.nome}</h3>
-                <span style={styles.brand}>{tennisItem.marca}</span>
+                <span style={{ ...styles.brand, color: isDarkMode ? "#ccc" : "#555" }}>{tennisItem.marca}</span>
                 <div style={styles.priceButtonContainer}>
                   <span style={styles.price}>
                     R${tennisItem.preco ? tennisItem.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "Sob consulta"}
@@ -115,8 +121,8 @@ const TennisComponent: React.FC = () => {
 
       {selectedTennis && (
         <div style={styles.modalOverlay} onClick={() => setSelectedTennis(null)}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button style={styles.closeButton} onClick={() => setSelectedTennis(null)}>
+          <div style={{ ...styles.modal, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }} onClick={(e) => e.stopPropagation()}>
+            <button style={{ ...styles.closeButton, color: isDarkMode ? "#fff" : "#000" }} onClick={() => setSelectedTennis(null)}>
               <X size={25} />
             </button>
             <div style={styles.modalContent}>
@@ -129,7 +135,7 @@ const TennisComponent: React.FC = () => {
               )}
               <div style={styles.modalDetails}>
                 <h2 style={styles.modalTitle}>{selectedTennis.nome}</h2>
-                <p style={styles.modalBrand}>{selectedTennis.marca}</p>
+                <p style={{ ...styles.modalBrand, color: isDarkMode ? "#ccc" : "#555" }}>{selectedTennis.marca}</p>
                 <p><strong>Número:</strong> {selectedTennis.numero}</p>
                 <p><strong>Cor:</strong> {selectedTennis.cor || "Indisponível"}</p>
                 <p style={styles.modalPrice}>R${selectedTennis.preco ? selectedTennis.preco.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "Sob consulta"}</p>
@@ -147,7 +153,7 @@ const styles = {
     display: "flex",
     justifyContent: "left",
     margin: "20px",
-    marginLeft: "120px",
+    marginLeft: "20px",
   },
   select: {
     padding: "5px",
@@ -177,7 +183,6 @@ const styles = {
   },
   brand: {
     fontSize: "14px",
-    color: "#555",
     fontWeight: "bold",
     marginBottom: "5px",
     textTransform: "uppercase" as const,
@@ -188,14 +193,12 @@ const styles = {
     gap: "20px",
     justifyContent: "center" as const,
     margin: "20px auto",
-    marginLeft: "120px",
   },
   card: {
     width: "250px",
     borderRadius: "10px",
     boxShadow: "2px 4px 11px 8px rgba(0, 0, 0, 0.1)",
     overflow: "hidden",
-    backgroundColor: "#fff",
     padding: "15px",
     display: "flex",
     flexDirection: "column" as const,
@@ -249,8 +252,8 @@ const styles = {
   },
   button: {
     padding: "10px",
-    backgroundColor: "#fff",
-    color: "#007bff",
+    backgroundColor: "transparent",
+    color: "#ff0000",
     border: "none",
     cursor: "pointer",
     transition: "background-color 0.3s",

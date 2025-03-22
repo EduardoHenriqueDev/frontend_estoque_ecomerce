@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Anuncio from "./pages/Anuncio";
 import Sobre from "./pages/Sobre";
 import Auth from "./pages/auth/Authentication";
 import Perfil from "./pages/Perfil";
+import Config from "./pages/Config";
 
 const App: React.FC = () => {
-  const navigate = useNavigate(); // Mantenha o useNavigate aqui dentro do componente
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
@@ -18,7 +20,7 @@ const App: React.FC = () => {
       setIsAuthenticated(true);
     }
 
-    document.body.style.backgroundColor = isDarkMode ? "#ffffff" : "#2e2e2e";
+    document.body.style.backgroundColor = isDarkMode ? "#ffffff" : "#333";
     document.body.style.color = isDarkMode ? "#000" : "#fff";
 
     const cards = document.querySelectorAll('.product-card');
@@ -35,14 +37,16 @@ const App: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsAuthenticated(false);
-    navigate("/Auth"); // Redireciona para a página de login
+    navigate("/Auth");
   };
+
+  const hideSidebar = location.pathname === "/Config";
 
   return (
     <div style={{ display: "flex" }}>
-      {isAuthenticated && <Sidebar isDarkMode={isDarkMode} toggleTheme={toggleTheme} handleLogout={handleLogout} />}
+      {isAuthenticated && !hideSidebar && <Sidebar isDarkMode={isDarkMode} toggleTheme={toggleTheme} handleLogout={handleLogout} />}
 
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, paddingLeft: isAuthenticated && !hideSidebar ? "100px" : "0" }}>
         <Routes>
           <Route
             path="/"
@@ -52,6 +56,7 @@ const App: React.FC = () => {
           <Route path="/Sobre" element={<Sobre />} />
           <Route path="/Auth" element={<Auth onLoginSuccess={() => setIsAuthenticated(true)} />} />
           <Route path="/Perfil" element={<Perfil />} />
+          <Route path="/Config" element={<Config />} />
         </Routes>
       </div>
     </div>
