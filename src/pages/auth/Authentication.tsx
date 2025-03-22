@@ -15,6 +15,7 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
 
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
+    const [rememberMe, setRememberMe] = useState(false); // Estado para lembrar de mim
 
     const navigate = useNavigate();
 
@@ -24,6 +25,16 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
         if (storedUser) {
             // Se o usuário já estiver no localStorage, redireciona para a página principal
             navigate("/");
+        }
+
+        // Verifica se as credenciais de login estão armazenadas
+        const savedEmail = localStorage.getItem("email");
+        const savedPassword = localStorage.getItem("password");
+
+        if (savedEmail && savedPassword) {
+            setLoginEmail(savedEmail);
+            setLoginPassword(savedPassword);
+            setRememberMe(true);
         }
     }, [navigate]);
 
@@ -70,6 +81,17 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
             if (data.user) {
                 localStorage.setItem("user", JSON.stringify(data.user));
                 onLoginSuccess();
+
+                // Salva as credenciais se "Lembrar de mim" estiver marcado
+                if (rememberMe) {
+                    localStorage.setItem("email", loginEmail);
+                    localStorage.setItem("password", loginPassword);
+                } else {
+                    // Caso contrário, remove as credenciais armazenadas
+                    localStorage.removeItem("email");
+                    localStorage.removeItem("password");
+                }
+
                 navigate("/");
             } else {
                 alert("Erro: Dados do usuário não encontrados.");
@@ -83,7 +105,7 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
         <div style={styles.container}>
             <div style={styles.card}>
                 <div style={styles.switchContainer}>
-                    <span style={{ ...styles.switchText, color: !isRegister ? "#2a3b5d" : "#999" }}>
+                    <span style={{ ...styles.switchText, color: !isRegister ? "#1C1C1C" : "#999" }}>
                         Login
                     </span>
                     <Switch.Root
@@ -98,7 +120,7 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                             }}
                         />
                     </Switch.Root>
-                    <span style={{ ...styles.switchText, color: isRegister ? "#2a3b5d" : "#999" }}>
+                    <span style={{ ...styles.switchText, color: isRegister ? "#1C1C1C" : "#999" }}>
                         Cadastro
                     </span>
                 </div>
@@ -128,6 +150,17 @@ const Auth: React.FC<AuthProps> = ({ onLoginSuccess }) => {
                                 value={loginPassword}
                                 onChange={(e) => setLoginPassword(e.target.value)}
                             />
+                        </div>
+
+                        <div style={styles.inputGroup}>
+                            <label style={styles.label}>
+                                <input
+                                    type="checkbox"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                />
+                                Lembrar de mim
+                            </label>
                         </div>
 
                         <button type="submit" style={styles.buttonLogin}>Entrar</button>
@@ -185,7 +218,7 @@ const styles = {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        backgroundColor: "#F3F4F6",
+        backgroundColor: "#ffffff",
     },
     card: {
         backgroundColor: "#fff",
@@ -209,7 +242,7 @@ const styles = {
     switchRoot: {
         width: "40px",
         height: "20px",
-        backgroundColor: "#2a3b5d",
+        backgroundColor: "#1C1C1C",
         borderRadius: "999px",
         position: "relative" as const,
         margin: "0 10px",
@@ -255,7 +288,7 @@ const styles = {
     },
     buttonLogin: {
         width: "100%",
-        backgroundColor: "#2a3b5d",
+        backgroundColor: "#1C1C1C",
         color: "#fff",
         fontWeight: "bold",
         padding: "10px",
@@ -266,7 +299,7 @@ const styles = {
     },
     buttonRegister: {
         width: "100%",
-        backgroundColor: "#2a3b5d",
+        backgroundColor: "#1C1C1C",
         color: "#fff",
         fontWeight: "bold",
         padding: "10px",

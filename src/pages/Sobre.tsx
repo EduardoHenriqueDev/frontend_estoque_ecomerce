@@ -81,7 +81,7 @@ const styles = {
     },
     link: {
         marginLeft: "5px",
-        color: "#1e2a47",
+        color: "#1C1C1C",
     }
 };
 

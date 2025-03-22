@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Anuncio from "./pages/Anuncio";
@@ -8,6 +8,7 @@ import Auth from "./pages/auth/Authentication";
 import Perfil from "./pages/Perfil";
 
 const App: React.FC = () => {
+  const navigate = useNavigate(); // Mantenha o useNavigate aqui dentro do componente
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
@@ -34,28 +35,33 @@ const App: React.FC = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     setIsAuthenticated(false);
+    navigate("/Auth"); // Redireciona para a página de login
   };
 
   return (
-    <Router>
-      <div style={{ display: "flex" }}>
-        {isAuthenticated && <Sidebar isDarkMode={isDarkMode} toggleTheme={toggleTheme} handleLogout={handleLogout} />}
+    <div style={{ display: "flex" }}>
+      {isAuthenticated && <Sidebar isDarkMode={isDarkMode} toggleTheme={toggleTheme} handleLogout={handleLogout} />}
 
-        <div style={{ flex: 1 }}>
-          <Routes>
-            <Route
-              path="/"
-              element={isAuthenticated ? <Home /> : <Auth onLoginSuccess={() => setIsAuthenticated(true)} />}
-            />
-            <Route path="/Anuncio" element={<Anuncio />} />
-            <Route path="/Sobre" element={<Sobre />} />
-            <Route path="/Auth" element={<Auth onLoginSuccess={() => setIsAuthenticated(true)} />} />
-            <Route path="/Perfil" element={<Perfil />} />
-          </Routes>
-        </div>
+      <div style={{ flex: 1 }}>
+        <Routes>
+          <Route
+            path="/"
+            element={isAuthenticated ? <Home /> : <Auth onLoginSuccess={() => setIsAuthenticated(true)} />}
+          />
+          <Route path="/Anuncio" element={<Anuncio />} />
+          <Route path="/Sobre" element={<Sobre />} />
+          <Route path="/Auth" element={<Auth onLoginSuccess={() => setIsAuthenticated(true)} />} />
+          <Route path="/Perfil" element={<Perfil />} />
+        </Routes>
       </div>
-    </Router>
+    </div>
   );
 };
 
-export default App;
+const AppWithRouter = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default AppWithRouter;

@@ -1,15 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Footprints, SquarePen, Info, Sun, Moon, UserRound } from "lucide-react";
+import { Footprints, SquarePen, Info, LogOut, UserRound } from "lucide-react";
 import logo from "../assets/img/logo.png";
 import * as Tooltip from "@radix-ui/react-tooltip";
 
 interface SidebarProps {
   isDarkMode: boolean;
   toggleTheme: () => void;
+  handleLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme, handleLogout }) => {
   return (
     <div style={{ ...styles.sidebar, }}
     >
@@ -87,10 +88,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme }) => {
         </Tooltip.Provider>
       </ul>
 
-      {/* Toggle de Modo Escuro/Claro */}
-      <button style={styles.toggleButton} onClick={toggleTheme}>
-        {isDarkMode ? <Sun size={25} color="#fff" /> : <Moon size={25} color="#fff" />}
-      </button>
+      <div style={styles.logoutContainer}>
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <button onClick={handleLogout} style={styles.logoutButton}>
+                <LogOut size={35} color="#ff0000" />
+              </button>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content style={styles.tooltipContent} side="right">
+                Logout
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+      </div>
     </div>
   );
 };
@@ -99,7 +113,7 @@ const styles = {
   sidebar: {
     height: "100vh",
     width: "100px",
-    background: "linear-gradient(135deg, #1e2a47, #151d33)",
+    background: "linear-gradient(135deg, #1C1C1C, #000000)",
     color: "white",
     position: "fixed" as "fixed",
     top: 0,
@@ -133,15 +147,11 @@ const styles = {
     alignItems: "center",
     width: "50px",
     height: "50px",
-    background: "linear-gradient(145deg, #223355, #1a253f)",
-    borderRadius: "12px",
+    background: "linear-gradient(145deg, #000000, #1C1C1C)",
+    borderRadius: "30px",
     cursor: "pointer",
     transition: "all 0.3s ease-in-out",
     boxShadow: "3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.1)",
-  },
-  navItemHover: {
-    background: "#2a3b5d",
-    boxShadow: "0 0 12px rgba(0, 150, 255, 0.6)",
   },
   link: {
     display: "flex",
@@ -151,26 +161,31 @@ const styles = {
     height: "100%",
     textDecoration: "none",
   },
-  toggleButton: {
-    marginTop: "auto",
-    marginBottom: "20px",
-    background: "linear-gradient(145deg, #223355, #1a253f)",
-    border: "none",
-    cursor: "pointer",
-    padding: "10px",
-    borderRadius: "50%",
-    boxShadow: "3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.1)",
-    transition: "all 0.3s ease-in-out",
-  },
-  toggleButtonHover: {
-    boxShadow: "0 0 12px rgba(255, 200, 0, 0.8)",
-  },
   tooltipContent: {
-    backgroundColor: "black",
-    color: "white",
+    backgroundColor: "white",
+    color: "black",
     padding: "5px 10px",
     borderRadius: "5px",
     fontSize: "14px",
+    fontWeight: "bold",
+    boxShadow: "2px 2px 5px rgba(0,0,0,0.2)"
+  },
+  logoutContainer: {
+    marginTop: "auto",
+    paddingBottom: "20px",
+    marginBottom: "20px",
+  },
+  logoutButton: {
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "50px",
+    height: "50px",
+    borderRadius: "30px",
+    transition: "all 0.3s ease-in-out",
   },
 };
 

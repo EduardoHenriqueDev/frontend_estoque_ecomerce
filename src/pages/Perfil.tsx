@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div style={styles.tennisListContainer}>
-                <h3 style={styles.tennisListTitle}>Seus Anúncios</h3>
+                <h3 style={styles.tennisListTitle}>Seus Anúncios ({tennisList.length})</h3>
                 {tennisList.length === 0 ? (
                     <p style={styles.noTennis}>Você ainda não tem anúncios.</p>
                 ) : (
@@ -91,7 +91,7 @@ const Profile: React.FC = () => {
                                     <h4 style={styles.tennisName}>{tennis.nome}</h4>
                                     <p style={styles.tennisDetails}>{`Número: ${tennis.numero}`}</p>
                                     <p style={styles.tennisDetails}>{`Preço: R$ ${tennis.preco.toFixed(2)}`}</p>
-                                    <p style={styles.tennisDetails}>{`Estoque: ${tennis.estoque}`}</p>
+                                    <p style={styles.tennisDetails}>{`Marca: ${tennis.marca}`}</p>
                                 </div>
                                 <div
                                     style={styles.deleteIcon}
@@ -199,7 +199,7 @@ const styles = {
         display: "flex",
         flexDirection: "column" as const,
         alignItems: "center" as const,
-        position: "relative" as "relative", // Posição relativa para o card
+        position: "relative" as "relative",
     },
     imageContainer: {
         width: "100%",
