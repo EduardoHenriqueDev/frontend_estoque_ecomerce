@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ShoppingCart, Search, X, ShoppingBag, Minus } from "lucide-react";
+import { ShoppingCart, Search, X, ShoppingBag } from "lucide-react";
 import axios from "axios";
 
 const marcasDisponiveis = ["Nike", "Jordan", "Adidas", "Puma", "Vans", "Reebok", "Asics", "Mizuno"];
@@ -39,6 +39,14 @@ const TennisComponent: React.FC = () => {
     const updatedCart = cartItems.filter((item) => item.id !== id);
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  };
+
+  const handleCheckout = () => {
+    if (cartItems.length === 0) {
+      alert("Seu carrinho está vazio!");
+      return;
+    }
+    alert("Redirecionando para o checkout...");
   };
 
   useEffect(() => {
@@ -227,7 +235,7 @@ const TennisComponent: React.FC = () => {
 
       <div style={{ ...styles.drawer, right: isDrawerOpen ? "0" : "-400px" }}>
         <button style={styles.closeButton} onClick={toggleDrawer}>
-          <ShoppingBag
+          <X
             size={30}
             style={{ ...styles.shoppingBagIcon, color: isDarkMode ? "#fff" : "#000" }}
             onClick={toggleDrawer}
@@ -251,12 +259,21 @@ const TennisComponent: React.FC = () => {
                   R$ {item.preco ? item.preco.toFixed(2) : "Sob consulta"}
                 </p>
                 <button onClick={() => removeFromCart(item.id)} style={styles.removeButton}>
-                  <Minus size={20} />
+                  REMOVER
                 </button>
               </div>
             </div>
           ))
         )}
+
+        <div style={styles.cartFooter}>
+          <p style={styles.totalPrice}>
+            Total: R$ {cartItems.reduce((acc, item) => acc + (item.preco || 0), 0).toFixed(2)}
+          </p>
+          <button style={styles.continueButton} onClick={handleCheckout}>
+            Continuar
+          </button>
+        </div>
       </div>
 
     </div>
@@ -505,10 +522,35 @@ const styles = {
   removeButton: {
     background: "none",
     border: "none",
-    color: "#ff0000",
+    color: "#ffffff",
     cursor: "pointer",
     padding: "5px",
     marginLeft: "10px",
+  },
+  cartFooter: {
+    bottom: "0",
+    left: "0",
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingBottom: "30px",
+    paddingLeft: "10px",
+  },
+  totalPrice: {
+    fontSize: "16px",
+    fontWeight: "bold",
+    color: "#ff0000",
+  },
+  continueButton: {
+    backgroundColor: "transparent",
+    color: "#fff",
+    border: "none",
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontSize: "16px",
+    fontWeight: "bold",
+    borderRadius: "5px",
   },
 };
 

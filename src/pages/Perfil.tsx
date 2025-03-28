@@ -6,6 +6,7 @@ const Profile: React.FC = () => {
     const [user, setUser] = useState<any>(null);
     const [tennisList, setTennisList] = useState<any[]>([]);
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+    const [profileImage, setProfileImage] = useState<string | null>(null);
 
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
@@ -13,6 +14,12 @@ const Profile: React.FC = () => {
         if (storedUser) {
             try {
                 const parsedUser = JSON.parse(storedUser);
+
+                if (parsedUser.fotoPerfil) {
+                    const fullProfileImage = `http://localhost:8080/uploads/perfil/${parsedUser.fotoPerfil}`;
+                    setProfileImage(fullProfileImage);
+                }
+
                 setUser(parsedUser);
                 fetchTennis(parsedUser.id);
             } catch (error) {
@@ -60,6 +67,34 @@ const Profile: React.FC = () => {
         }
     };
 
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch(`http://localhost:8080/usuarios/${user.id}/uploadProfilePicture`, {
+                method: "POST",
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setProfileImage(`http://localhost:8080/uploads/perfil/${data.fileName}`);
+
+                const updatedUser = { ...user, fotoPerfil: data.fileName };
+                setUser(updatedUser);
+                localStorage.setItem("user", JSON.stringify(updatedUser));
+            } else {
+                console.error("Erro ao enviar a imagem");
+            }
+        } catch (error) {
+            console.error("Erro ao processar upload", error);
+        }
+    };
+
     if (!user) {
         return <div style={styles.loading}>Carregando...</div>;
     }
@@ -78,9 +113,14 @@ const Profile: React.FC = () => {
             </div>
             <div style={styles.profileInfo}>
                 <div style={styles.avatarContainer}>
-                    <div style={styles.avatar}>
-                        <span style={styles.avatarText}>{user.nome[0]}</span>
-                    </div>
+                    <label htmlFor="fileInput" style={styles.avatar}>
+                        {profileImage ? (
+                            <img src={profileImage} alt="Perfil" style={styles.profileImage} />
+                        ) : (
+                            <span style={styles.avatarText}>{user.nome[0]}</span>
+                        )}
+                        <input type="file" id="fileInput" style={{ display: "none" }} onChange={handleImageUpload} />
+                    </label>
                 </div>
                 <div style={styles.infoContainer}>
                     <h2 style={{ ...styles.name, color: isDarkMode ? "#fff" : "#000" }}>{user.nome}</h2>
@@ -135,7 +175,6 @@ const styles = {
         justifyContent: "flex-start",
         alignItems: "center",
         minHeight: "70vh",
-        backgroundColor: "#fff",
         padding: "20px",
         marginTop: "0",
     },
@@ -172,6 +211,12 @@ const styles = {
     },
     avatarText: {
         fontSize: "48px",
+    },
+    profileImage: {
+        width: "100%",
+        height: "100%",
+        objectFit: "cover" as const,
+        borderRadius: "50%",
     },
     name: {
         fontSize: "28px",

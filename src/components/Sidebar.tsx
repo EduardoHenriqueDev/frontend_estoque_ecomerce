@@ -10,7 +10,13 @@ interface SidebarProps {
   handleLogout: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme, handleLogout }) => {
+const Sidebar: React.FC<SidebarProps> = ({ handleLogout }) => {
+
+  const logoutAndClearData = () => {
+    localStorage.clear();
+    handleLogout();
+  };
+
   return (
     <div style={{ ...styles.sidebar, }}
     >
@@ -75,7 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isDarkMode, toggleTheme, handleLogout
         <Tooltip.Provider>
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
-              <button onClick={handleLogout} style={styles.logoutButton}>
+              <button onClick={logoutAndClearData} style={styles.logoutButton}>
                 <LogOut size={35} color="#ff0000" />
               </button>
             </Tooltip.Trigger>
@@ -105,8 +111,6 @@ const styles = {
     flexDirection: "column" as "column",
     alignItems: "center",
     paddingTop: "20px",
-    borderBottomRightRadius: "20px",
-    borderTopRightRadius: "20px",
   },
   logoContainer: {
     marginBottom: "20px",
