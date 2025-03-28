@@ -30,10 +30,18 @@ const TennisComponent: React.FC = () => {
   };
 
   const addToCart = (tennisItem: Tennis) => {
+    const isItemInCart = cartItems.some((item) => item.id === tennisItem.id);
+
+    if (isItemInCart) {
+      alert("Este produto já está no carrinho.");
+      return;
+    }
+
     const updatedCart = [...cartItems, tennisItem];
     setCartItems(updatedCart);
     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
   };
+
 
   const removeFromCart = (id: number) => {
     const updatedCart = cartItems.filter((item) => item.id !== id);
@@ -110,7 +118,7 @@ const TennisComponent: React.FC = () => {
             placeholder="Buscar por nome..."
             value={termoBusca}
             onChange={(e) => setTermoBusca(e.target.value)}
-            style={{ ...styles.searchBar, backgroundColor: isDarkMode ? "#333" : "#fff" }}
+            style={{ ...styles.searchBar, backgroundColor: isDarkMode ? "#333" : "#fff", color: isDarkMode ? "#fff" : "#000" }}
           />
           <Search size={20} style={styles.searchIcon} />
         </div>
@@ -256,7 +264,13 @@ const TennisComponent: React.FC = () => {
               <div style={styles.cartDetails}>
                 <p style={styles.cartName}>{item.nome}</p>
                 <p style={styles.cartPrice}>
-                  R$ {item.preco ? item.preco.toFixed(2) : "Sob consulta"}
+                  R${" "}
+                  {item.preco
+                    ? item.preco.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                    : "Sob consulta"}
                 </p>
                 <button onClick={() => removeFromCart(item.id)} style={styles.removeButton}>
                   REMOVER
@@ -268,7 +282,13 @@ const TennisComponent: React.FC = () => {
 
         <div style={styles.cartFooter}>
           <p style={styles.totalPrice}>
-            Total: R$ {cartItems.reduce((acc, item) => acc + (item.preco || 0), 0).toFixed(2)}
+            Total: R${" "}
+            {cartItems
+              .reduce((acc, item) => acc + (item.preco || 0), 0)
+              .toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
           </p>
           <button style={styles.continueButton} onClick={handleCheckout}>
             Continuar

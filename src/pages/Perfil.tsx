@@ -201,7 +201,7 @@ const styles = {
         width: "200px",
         height: "200px",
         borderRadius: "50%",
-        backgroundColor: "#2a3b5d",
+        backgroundColor: "#ff0000",
         color: "#fff",
         display: "flex",
         justifyContent: "center",
